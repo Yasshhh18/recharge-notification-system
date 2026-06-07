@@ -19,7 +19,10 @@ export const initMailer = async () => {
       },
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 8000
     });
   } else {
     console.log('⚠️ No SMTP config found. Creating Nodemailer Ethereal test account...');
