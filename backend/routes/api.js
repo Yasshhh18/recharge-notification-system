@@ -4,9 +4,42 @@ import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
 import eventEmitter from '../utils/eventEmitter.js';
 import { checkExpiringSubscriptions, checkExpiredSubscriptions } from '../cron/cronJobs.js';
+import { sendEmail } from '../utils/mailer.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'recharge_secret_key_123';
+
+// Diagnostic Test Email Route (No Auth required for troubleshooting, can query via query param)
+router.get('/test-email', async (req, res) => {
+  const toEmail = req.query.email || 'yashpatilpubg@gmail.com';
+  try {
+    console.log(`🧪 Running diagnostic test email to ${toEmail}...`);
+    const result = await sendEmail({
+      to: toEmail,
+      subject: 'Diagnostic SMTP Test Email',
+      html: `
+        <h3>SMTP Diagnostic Test</h3>
+        <p>This email was triggered to verify if SMTP is working on the server.</p>
+        <ul>
+          <li><strong>Timestamp:</strong> ${new Date().toISOString()}</li>
+          <li><strong>SMTP Host:</strong> ${process.env.SMTP_HOST || 'Not Configured'}</li>
+          <li><strong>SMTP User:</strong> ${process.env.SMTP_USER || 'Not Configured'}</li>
+        </ul>
+      `
+    });
+    res.json({ success: true, message: 'Email sent successfully!', result });
+  } catch (err) {
+    console.error('❌ Diagnostic test email failed:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send diagnostic email',
+      error: err.message,
+      code: err.code,
+      response: err.response,
+      stack: err.stack
+    });
+  }
+});
 
 // Helper to log and format DB errors descriptively
 const handleDbError = (error, res, actionName) => {
