@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CreditCard, Calendar, Clock, Check, HelpCircle, Activity } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
 
 const PLANS = [
   { id: 'Basic', name: 'Basic Plan', price: 99, features: ['Standard Support', 'Single Device Access', 'SD Streaming'] },

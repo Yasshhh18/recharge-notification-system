@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, CreditCard, Clock, ShieldAlert, Mail, PlayCircle, Loader2 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
 
 export default function AdminDashboard({ token }) {
   const [analytics, setAnalytics] = useState({
